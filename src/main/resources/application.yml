@@ -1,0 +1,52 @@
+server:
+  port: 8788
+
+spring:
+  datasource:
+    username: root
+    password: jinl1994
+    url: jdbc:mysql://127.0.0.1:3306/coins
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  ### Redis缓存配置 ###
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password:
+    timeout: 300ms
+    jedis:
+      pool:
+        max-active: 100
+        max-wait: 500ms
+        min-idle: 10
+
+  ### Mybatis 配置 ###
+  mybatis:
+    mapperLocations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+    typeAliasesPackage: com.ismayfly.coins.tools.model.po  # 注意：对应实体类的路径
+    configuration:
+      mapUnderscoreToCamelCase: true
+      use-generated-keys: true
+
+  ### 日志配置 ###
+  logging:
+    path: /Users/jl/logs/coins/tools/
+    level:
+      root: info
+    file:
+      max-size: 10000000000
