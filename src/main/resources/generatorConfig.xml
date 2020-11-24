@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+    <!--配置mysql驱动-->
+    <classPathEntry
+            location="/Users/jl/dev/javabasic/mysql-connector-java-8.0.11.jar"/>
+
+
+    <!-- 配置数据源 -->
+    <context id="context" targetRuntime="MyBatis3Simple">
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection userId="root" password="jinl1994" driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/coins?characterEncoding=UTF-8"/>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- 生成模型的包名和位置-->
+        <javaModelGenerator targetPackage="com.ismayfly.coins.tools.model.po" targetProject="/Users/jl/dev/ald-backup/ishangjie/tools/src/main/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+        <!-- 生成映射文件的包名和位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="/Users/jl/dev/ald-backup/ishangjie/tools/src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+
+        <!-- 生成DAO的包名和位置-->
+        <javaClientGenerator targetPackage="com.ismayfly.coins.tools.mapper" type="XMLMAPPER" targetProject="/Users/jl/dev/ald-backup/ishangjie/tools/src/main/java">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+        <table schema="md_social_information" tableName="md_social_information" enableCountByExample="true" enableDeleteByExample="true"
+               enableSelectByExample="true" enableUpdateByExample="true"/>
+
+
+    </context>
+
+
+</generatorConfiguration>

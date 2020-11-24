@@ -1,8 +1,12 @@
 package com.ismayfly.coins.tools.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -53,9 +57,6 @@ public class DruidDBConfig {
     @Value("${spring.datasource.poolPreparedStatements}")
     private boolean poolPreparedStatements;
 
-    @Value("${spring.datasource.maxPoolPreparedStatementPerConnectionSize}")
-    private int maxPoolPreparedStatementPerConnectionSize;
-
     @Value("${spring.datasource.filters}")
     private String filters;
 
@@ -87,7 +88,7 @@ public class DruidDBConfig {
         datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
         datasource.setValidationQuery(validationQuery);
         datasource.setPoolPreparedStatements(poolPreparedStatements);
-        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
+       // datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
         try {
             //cofig filter
             datasource.setFilters(filters);
@@ -98,4 +99,43 @@ public class DruidDBConfig {
         datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
+
+    /**
+     * 自定义的Servlet注册。用于视图监控
+     *
+     * @return
+     */
+    @Bean
+    public ServletRegistrationBean statViewServlet() {
+        // 创建servlet注册实体
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet());
+        //druid监控统计路径
+        servletRegistrationBean.addUrlMappings("/druid/*");
+        // 设置ip白名单(没有配置或者为空，则允许所有访问)
+        servletRegistrationBean.addInitParameter("allow", "");
+        // 设置ip黑名单,如果allow与deny共同存在时,deny优先于allow
+        servletRegistrationBean.addInitParameter("deny", "");
+        // 设置控制台管理用户
+        servletRegistrationBean.addInitParameter("loginUsername", "admin");
+        servletRegistrationBean.addInitParameter("loginPassword", "admin");
+        // 是否可以重置数据
+        servletRegistrationBean.addInitParameter("resetEnable", "false");
+        return servletRegistrationBean;
+    }
+
+    /**
+     * 自定义的Filter注册
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean statFilter() {
+        // 创建过滤器
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
+        // 设置过滤器过滤路径
+        filterRegistrationBean.addUrlPatterns("/*");
+        // 忽略过滤的形式
+        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*");
+        return filterRegistrationBean;
+    }
+
 }
