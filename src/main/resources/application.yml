@@ -1,12 +1,13 @@
 server:
-  port: 8788
-
+  port: 8328
+  servlet:
+    context-path: /link
 spring:
   datasource:
     username: root
     password: jinl1994
-    url: jdbc:mysql://127.0.0.1:3306/coins
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ ?characterEncoding=utf-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
     minIdle: 5
@@ -35,18 +36,25 @@ spring:
         max-wait: 500ms
         min-idle: 10
 
-  ### Mybatis 配置 ###
-  mybatis:
-    mapperLocations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
-    typeAliasesPackage: com.ismayfly.coins.tools.model.po  # 注意：对应实体类的路径
-    configuration:
-      mapUnderscoreToCamelCase: true
-      use-generated-keys: true
+### Mybatis 配置 ###
+mybatis:
+  mapperLocations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  typeAliasesPackage: com.ismayfly.coins.tools.model.po  # 注意：对应实体类的路径
+  configuration:
+    mapUnderscoreToCamelCase: true
+    use-generated-keys: true
 
-  ### 日志配置 ###
-  logging:
+### pagehelper分页插件 ###
+pagehelper:
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+
+### 日志配置 ###
+logging:
+  level:
+    root: info
+  file:
+    max-size: 10000000000
     path: /Users/jl/logs/coins/tools/
-    level:
-      root: info
-    file:
-      max-size: 10000000000

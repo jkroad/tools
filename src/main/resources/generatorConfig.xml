@@ -42,7 +42,7 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table schema="md_social_information" tableName="md_social_information" enableCountByExample="true" enableDeleteByExample="true"
+        <table schema="mc_shop_code_mapping" tableName="mc_shop_code_mapping" enableCountByExample="true" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true"/>
 
 
