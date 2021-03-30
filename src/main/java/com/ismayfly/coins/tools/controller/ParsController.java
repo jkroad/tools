@@ -12,10 +12,12 @@ import com.ismayfly.coins.tools.service.MpPayConfigBankService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -158,7 +160,46 @@ public class ParsController {
         return  null;
     }
 
+    @PostMapping("parsingExcel")
+    public HandleResponse parsingExcelFile () throws IOException {
+        Workbook workbook;
+        Sheet sheet;
+        FileInputStream fileInputStream;
+        try{
+            fileInputStream = new FileInputStream(new File("/Users/jl/Downloads/100.xlsx"));
+            workbook = new XSSFWorkbook(fileInputStream);
+            sheet = workbook.getSheetAt(1);
+            //遍历解析
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);    // 获取行
+                row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                String userName = row.getCell(0).getStringCellValue();
+                Double czAmount = row.getCell(1).getNumericCellValue();
+                Double txAmount = row.getCell(2).getNumericCellValue();
+                Double realAmount =  row.getCell(3).getNumericCellValue();
+                Double addAmount = row.getCell(4).getNumericCellValue();
+                String disc = row.getCell(5).getStringCellValue();
+                String userId = row.getCell(6).getStringCellValue();
+                String x = row.getCell(7).getStringCellValue();
+                Double freezeAmount = row.getCell(8).getNumericCellValue();
+                Double withdrawlAmount = row.getCell(9).getNumericCellValue();
+                withdrawlAmount+=addAmount;
+                String remark = "女神节充值活动,充值金额"+realAmount+" "+disc;
+//                log.info("userName:{},czAmount:{},txAmount:{},realAmount:{},addAmount:{},disc:{},userId:{},x:{}",userName,czAmount,txAmount,realAmount,addAmount,disc,userId,x);
+//                log.info("INSERT INTO af_user_account_log(user_id,type,amount,remark)VALUES({},'AUCTION_ACTIVITY',{},{});",userId,addAmount,remark);
+//                System.out.println("INSERT INTO af_user_account_log(user_id,type,amount,remark)VALUES("+userId+",'AUCTION_ACTIVITY',"+addAmount+",'"+remark+"');");
 
+                System.out.println("INSERT INTO af_user_account_record(user_id,pay_or_income,income_type,income_code,amount,freeze_amount,balance,memo)" +
+                                   "values("+userId+",'INCOME','BEAN','AUCTION_ACTIVITY',"+addAmount+","+freezeAmount+","+withdrawlAmount+",'"+remark+"');");
+            }
+            fileInputStream.close();
+            workbook.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return  HandleResponse.successResponse();
+    }
     /**
      * 解析MCC映射关系
      * @return
@@ -201,19 +242,19 @@ public class ParsController {
 
                 Row row = sheet.getRow(i);    // 获取行
                 // 获取单元格中的值
-                Double mccCode = row.getCell(3).getNumericCellValue();
-                String shopName = row.getCell(4).getStringCellValue();
-                String desc = row.getCell(5).getStringCellValue();
-                String mainCategory = cateList[i][0] != null ? cateList[i][0] : row.getCell(0).getStringCellValue();
-                String secondaryCategory = cateList[i][1] != null ? cateList[i][1] : row.getCell(1).getStringCellValue();
-                String categories = cateList[i][2] != null ? cateList[i][2] : row.getCell(2).getStringCellValue();
-                mcShopCodeMapping.setMainCategory(mainCategory);
-                mcShopCodeMapping.setSecondaryCategory(secondaryCategory);
-                mcShopCodeMapping.setCategories(categories);
-                mcShopCodeMapping.setCode(mccCode.intValue());
-                mcShopCodeMapping.setShopDetails(desc);
-                mcShopCodeMapping.setCodeValue(shopName);
-                resultList.add(mcShopCodeMapping);
+//                Double mccCode = row.getCell(3).getNumericCellValue();
+//                String shopName = row.getCell(4).getStringCellValue();
+//                String desc = row.getCell(5).getStringCellValue();
+//                String mainCategory = cateList[i][0] != null ? cateList[i][0] : row.getCell(0).getStringCellValue();
+//                String secondaryCategory = cateList[i][1] != null ? cateList[i][1] : row.getCell(1).getStringCellValue();
+//                String categories = cateList[i][2] != null ? cateList[i][2] : row.getCell(2).getStringCellValue();
+////                mcShopCodeMapping.setMainCategory(mainCategory);
+////                mcShopCodeMapping.setSecondaryCategory(secondaryCategory);
+////                mcShopCodeMapping.setCategories(categories);
+////                mcShopCodeMapping.setCode(mccCode.intValue());
+////                mcShopCodeMapping.setShopDetails(desc);
+////                mcShopCodeMapping.setCodeValue(shopName);
+////                resultList.add(mcShopCodeMapping);
             }
             fileInputStream.close();
             workbook.close();
@@ -224,5 +265,13 @@ public class ParsController {
             mcShopCodeMappingService.save(mcShopCodeMapping);
         }
         return HandleResponse.successResponse("");
+    }
+
+    /**
+     * 解析行数据
+     * @param row
+     */
+    private  void doParsing(Row row){
+
     }
 }
