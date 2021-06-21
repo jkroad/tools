@@ -1,4 +1,4 @@
-package com.ismayfly.coins.tools.config;
+package com.ismayfly.coins.tools.config.database;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;

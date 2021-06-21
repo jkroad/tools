@@ -1,4 +1,4 @@
-package com.ismayfly.coins.tools.config;
+package com.ismayfly.coins.tools.config.redis;
 
 import org.redisson.Redisson;
 import org.redisson.config.Config;
@@ -24,7 +24,10 @@ public class RedissonConfig {
         config.useClusterServers()
                 .setScanInterval(1200) //集群状态扫描间隔时间，单位是毫秒
                 //可以用"rediss://"来启用SSL连接
-                .addNodeAddress("redis://127.0.0.1:6371,redis://127.0.0.1:6372,redis://127.0.0.1:6373");
+                .addNodeAddress("redis://127.0.0.1:6371")
+                .addNodeAddress("redis://127.0.0.1:6372")
+                .addNodeAddress("redis://127.0.0.1:6373");
+
         return  Redisson.create(config);
     }
 }

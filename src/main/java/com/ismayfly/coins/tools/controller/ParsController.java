@@ -168,30 +168,36 @@ public class ParsController {
         try{
             fileInputStream = new FileInputStream(new File("/Users/jl/Downloads/100.xlsx"));
             workbook = new XSSFWorkbook(fileInputStream);
-            sheet = workbook.getSheetAt(1);
+            sheet = workbook.getSheetAt(0);
             //遍历解析
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);    // 获取行
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
-                String userName = row.getCell(0).getStringCellValue();
-                Double czAmount = row.getCell(1).getNumericCellValue();
-                Double txAmount = row.getCell(2).getNumericCellValue();
-                Double realAmount =  row.getCell(3).getNumericCellValue();
-                Double addAmount = row.getCell(4).getNumericCellValue();
-                String disc = row.getCell(5).getStringCellValue();
-                String userId = row.getCell(6).getStringCellValue();
-                String x = row.getCell(7).getStringCellValue();
-                Double freezeAmount = row.getCell(8).getNumericCellValue();
-                Double withdrawlAmount = row.getCell(9).getNumericCellValue();
-                withdrawlAmount+=addAmount;
-                String remark = "女神节充值活动,充值金额"+realAmount+" "+disc;
+                String name = row.getCell(0).getStringCellValue();
+                String code = String.valueOf(row.getCell(1).getNumericCellValue());
+//                String userName = row.getCell(0).getStringCellValue();
+//                Double czAmount = row.getCell(1).getNumericCellValue();
+//                Double txAmount = row.getCell(2).getNumericCellValue();
+//                Double realAmount =  row.getCell(3).getNumericCellValue();
+//                Double addAmount = row.getCell(4).getNumericCellValue();
+//                String disc = row.getCell(5).getStringCellValue();
+//                String userId = row.getCell(6).getStringCellValue();
+//                String x = row.getCell(7).getStringCellValue();
+//                Double freezeAmount = row.getCell(8).getNumericCellValue();
+//                Double withdrawlAmount = row.getCell(9).getNumericCellValue();
+//                withdrawlAmount+=addAmount;
+//                String remark = "女神节充值活动,充值金额"+realAmount+" "+disc;
 //                log.info("userName:{},czAmount:{},txAmount:{},realAmount:{},addAmount:{},disc:{},userId:{},x:{}",userName,czAmount,txAmount,realAmount,addAmount,disc,userId,x);
 //                log.info("INSERT INTO af_user_account_log(user_id,type,amount,remark)VALUES({},'AUCTION_ACTIVITY',{},{});",userId,addAmount,remark);
 //                System.out.println("INSERT INTO af_user_account_log(user_id,type,amount,remark)VALUES("+userId+",'AUCTION_ACTIVITY',"+addAmount+",'"+remark+"');");
-
-                System.out.println("INSERT INTO af_user_account_record(user_id,pay_or_income,income_type,income_code,amount,freeze_amount,balance,memo)" +
-                                   "values("+userId+",'INCOME','BEAN','AUCTION_ACTIVITY',"+addAmount+","+freezeAmount+","+withdrawlAmount+",'"+remark+"');");
+//
+//                System.out.println("INSERT INTO af_user_account_record(user_id,pay_or_income,income_type,income_code,amount,freeze_amount,balance,memo)" +
+//                                   "values("+userId+",'INCOME','BEAN','AUCTION_ACTIVITY',"+addAmount+","+freezeAmount+","+withdrawlAmount+",'"+remark+"');");
+//                System.out.println("INSERT INTO af_logistics_code_config(logistics_name,logidtics_code)VALUES('"+name+"','"+code+"');");
+                System.out.println("INSERT INTO af_user_account_record(user_id,pay_or_income,income_type,income_code,amount,freeze_amount,balance,memo,settlement_status) select a.id,'INCOME','BEAN','AUCTION_ACTIVITY',"+code+",b.freeze_amount,withdrawl_amount+"+code+",'分享朋友圈奖励',1 from af_user a LEFT JOIN af_user_account_common b  on a.id = b.user_id " +
+                        "where user_name ='"+name+"';");
             }
+
             fileInputStream.close();
             workbook.close();
         }catch (Exception e){

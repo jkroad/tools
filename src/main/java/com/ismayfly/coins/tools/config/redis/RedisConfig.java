@@ -1,4 +1,4 @@
-package com.ismayfly.coins.tools.config;
+package com.ismayfly.coins.tools.config.redis;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -108,5 +108,16 @@ public class RedisConfig extends CachingConfigurerSupport   {
 
     }
 
+
+    @Bean("redisClusterTemplate")
+    public RedisTemplate redisClusterTemplate(RedisConnectionFactory redisConnectionFactory){
+
+        RedisTemplate<String,String> redisTemplate=new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
 
 }
